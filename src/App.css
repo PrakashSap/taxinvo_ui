@@ -13,6 +13,22 @@
   }
 }
 
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+  #printable-invoice, #printable-invoice * {
+    visibility: visible !important;
+  }
+  #printable-invoice {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .no-print { display: none !important; }
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
