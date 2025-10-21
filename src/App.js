@@ -13,7 +13,7 @@ import CreditManagement from "./pages/Customers/CreditManagement";
 import Login from "./Auth/Login";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./Auth/firebase"
+import { auth } from "./Auth/firebase";
 
 function App() {
     const [user, setUser] = useState(null);

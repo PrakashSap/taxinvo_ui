@@ -9,7 +9,7 @@ const ViewInvoiceModal = ({ isOpen, onClose, invoice }) => {
     const items = invoice.lineItems || [];
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div id="printable-invoice" className="bg-white w-full max-w-3xl rounded-lg shadow-lg p-6 overflow-auto">
+            <div id="printable-invoice" className="bg-white w-full max-w-3xl rounded-lg shadow-lg p-6 overflow-y-auto max-h-[90vh]">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-semibold">Invoice Preview — {invoice.referenceNo}</h2>
                     <button onClick={onClose} className="text-gray-600"><XMarkIcon className="w-6 h-6" /></button>
@@ -19,7 +19,7 @@ const ViewInvoiceModal = ({ isOpen, onClose, invoice }) => {
                     <div><strong>Customer:</strong> {invoice.partyName || invoice.partyId}</div>
                     <div><strong>Payment:</strong> {invoice.paymentMethod}</div>
                 </div>
-
+                <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse border">
                     <thead className="bg-gray-100">
                     <tr>
@@ -44,7 +44,7 @@ const ViewInvoiceModal = ({ isOpen, onClose, invoice }) => {
                     ))}
                     </tbody>
                 </table>
-
+                    </div>
                 <div className="mt-4 text-right">
                     <div><strong>Subtotal Taxable:</strong> ₹ {toNum(invoice.totals?.subtotalTaxable).toFixed(2)}</div>
                     <div><strong>GST:</strong> ₹ {toNum(invoice.totals?.subtotalGst).toFixed(2)}</div>

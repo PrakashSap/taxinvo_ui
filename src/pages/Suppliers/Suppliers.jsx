@@ -89,16 +89,15 @@ export default function Suppliers() {
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Suppliers</h1>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Suppliers</h1>
                 <button
                     onClick={() => {
                         setForm(emptySupplier);
                         setEditing(false);
                         setIsModalOpen(true);
                     }}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 transition"
-                >
+                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 transition w-full sm:w-auto">
                     <PlusCircleIcon className="w-5 h-5 mr-2" /> Add Supplier
                 </button>
             </div>

@@ -78,8 +78,8 @@ export default function Parties() {
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             {/* Header */}
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Customers</h1>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Customers</h1>
                 <button
                     onClick={() => {
                         setForm(emptyCustomer);

@@ -166,14 +166,15 @@ export default function Products() {
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-3">
                 <h1 className="text-3xl font-bold text-gray-800">Products</h1>
             </div>
 
             {/* Search Bar */}
-            <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-            <div className="mb-4 relative w-full sm:w-80">
-                <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <div className="relative w-full sm:w-64">
+                <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none"/>
                 <input
                     type="text"
                     placeholder="Search products..."
@@ -188,14 +189,14 @@ export default function Products() {
                     setEditing(false);
                     setIsModalOpen(true);
                 }}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 transition w-full sm:w-auto"
-            >
+                className="flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition w-full sm:w-auto">
                 <PlusCircleIcon className="w-5 h-5" /> Add Product
             </button>
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded shadow overflow-x-auto">
+                <div className="bg-white rounded shadow overflow-hidden">
+                <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
                     <thead className="bg-gray-100">
                     <tr>
@@ -247,6 +248,7 @@ export default function Products() {
                     )}
                     </tbody>
                 </table>
+            </div>
             </div>
 
             {/* Product Modal */}
@@ -353,6 +355,7 @@ export default function Products() {
                 onSave={handleSupplierSave}
                 editing={false}
             />
+        </div>
         </div>
     );
 }

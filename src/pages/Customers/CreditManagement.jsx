@@ -235,8 +235,9 @@ export default function CreditManagement() {
                             Credit & Invoice History
                         </h2>
                     </div>
-
-                    <table className="w-full text-sm border border-gray-200 dark:border-gray-700 border-collapse">
+                    <div className="mt-4 bg-white rounded shadow overflow-hidden">
+                        <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
                         <tr>
                             <th className="text-left px-3 py-2 border">Date</th>
@@ -275,6 +276,8 @@ export default function CreditManagement() {
                         ))}
                         </tbody>
                     </table>
+                        </div>
+                    </div>
                 </div>
             )}
             {showModal && selectedCustomer && (

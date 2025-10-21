@@ -90,13 +90,14 @@ const Purchases = () => {
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+            <h1 className="text-3xl font-bold text-gray-800">
                 Stock Purchases
             </h1>
 
             {/* Toolbar */}
-            <div className="flex justify-between items-center mb-6">
-                <div className="relative">
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <div className="relative w-full sm:w-64">
                     <input
                         type="text"
                         placeholder="Search Batch No or Product..."
@@ -105,22 +106,23 @@ const Purchases = () => {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-80 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"/>
-                    <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                        className="w-full border p-2 rounded-lg pl-10 text-sm"/>
+                    <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none"/>
                 </div>
                 <button
                     onClick={() => {
                         setEditingStock(null);
                         setIsModalOpen(true);
                     }}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                    className="flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition w-full sm:w-auto">
                     <PlusCircleIcon className="w-5 h-5 mr-2" />
                     Add Invoice
                 </button>
             </div>
 
             {/* Table */}
-            <div className="bg-white shadow-xl rounded-xl overflow-x-auto">
+                <div className="bg-white rounded shadow overflow-hidden">
+            <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-100">
                     <tr>
@@ -216,6 +218,7 @@ const Purchases = () => {
                     </tbody>
                 </table>
             </div>
+                </div>
 
             {/* Pagination */}
             <div className="flex justify-end items-center mt-6 space-x-3">
@@ -254,6 +257,7 @@ const Purchases = () => {
                     onClose={() => setPrintId(null)}
                 />
             )}
+        </div>
         </div>
     );
 };

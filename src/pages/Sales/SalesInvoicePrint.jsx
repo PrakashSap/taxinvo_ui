@@ -108,14 +108,14 @@ const SalesInvoicePrint = ({ referenceNo, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 bg-gray-900/60 flex items-center justify-center">
+        <div className="fixed inset-0 z-[100] bg-gray-100 overflow-y-auto">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl mx-4">
                 {/* Header Controls */}
                 <div className="flex justify-between p-3 border-b print:hidden bg-pink-50">
                     <h3 className="font-semibold text-gray-700">
                         Sales Invoice — {referenceNo}
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="fixed top-0 right-0 z-[110] p-4 flex space-x-3 bg-white shadow-lg rounded-bl-lg">
                         <button
                             onClick={handlePrint}
                             className="p-2 rounded bg-pink-600 text-white hover:bg-pink-700"
@@ -137,7 +137,8 @@ const SalesInvoicePrint = ({ referenceNo, onClose }) => {
                 </div>
 
                 {/* Printable Invoice */}
-                <div ref={ref} id="printable-invoice" className="p-8 bg-white">
+                <div className="min-h-full py-10 px-2 sm:px-4 md:px-6 mt-[60px]">
+                <div ref={ref} id="printable-invoice" className="bg-white p-6 md:p-10 mx-auto max-w-4xl shadow-2xl">
                     {/* Company Header */}
                     <div className="text-center border-b border-gray-400 pb-2 mb-4">
                         <h2 className="text-2xl font-bold text-gray-900">
@@ -276,6 +277,7 @@ const SalesInvoicePrint = ({ referenceNo, onClose }) => {
                     <p className="text-xs text-gray-500 text-center mt-2 italic">
                         * Subject to T. Narasipura Jurisdiction *
                     </p>
+                </div>
                 </div>
             </div>
         </div>

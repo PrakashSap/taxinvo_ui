@@ -300,9 +300,9 @@ const AddSaleModal = ({ isOpen, onClose, onSuccess, editingSale = null, onPrevie
                             </div>
 
                             {form.lineItems.map((li, idx) => (
-                                <div key={idx} className="grid grid-cols-12 gap-2 items-center mb-3 p-2 border rounded">
+                                <div key={idx} className="grid grid-cols-2 gap-2 border-b p-2 items-center bg-white md:grid-cols-6 md:gap-4 hover:bg-gray-50 py-3 border rounded">
                                     {/* stock select (shows batches with price) */}
-                                    <div className="col-span-4">
+                                    <div className="col-span-2 md:col-span-1">
                                         <select className="w-full border rounded p-2" value={li.stockId || ''} onChange={(e) => updateLine(idx, 'stockId', e.target.value)}>
                                             <option value="">-- Select stock/batch (or product) --</option>
                                             {stocks.map((s) => (
@@ -339,7 +339,7 @@ const AddSaleModal = ({ isOpen, onClose, onSuccess, editingSale = null, onPrevie
                                         <div className="font-semibold text-indigo-700">Tot ₹{toNum(li.lineTotal).toFixed(2)}</div>
                                     </div>
 
-                                    <div className="col-span-1 text-right">
+                                    <div className="col-span-2 md:col-span-1 flex justify-end">
                                         <button type="button" onClick={() => removeLine(idx)} className="text-red-600"><TrashIcon className="w-5 h-5" /></button>
                                     </div>
                                 </div>

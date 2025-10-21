@@ -2,8 +2,26 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { getAuth } from "firebase/auth";
 
+// 💡 CRITICAL CHANGE: Determine BASE_URL conditionally
+let BASE_URL;
+
+// Check if the application is running in the local development environment
+if (process.env.NODE_ENV === 'development') {
+    // Use the local URL for development
+    // Note: The dev server (e.g., create-react-app) handles proxying or uses this directly
+    BASE_URL = 'http://localhost:8080/api';
+} else {
+    // Use the URL specified in the .env file for production builds
+    BASE_URL = process.env.REACT_APP_API_URL;
+}
+
+// Ensure BASE_URL is available
+if (!BASE_URL) {
+    console.error("BASE_URL is not defined! Check your .env setup.");
+}
+console.log("API Base URL:", BASE_URL);
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: BASE_URL,
     headers: {
         "Content-Type": "application/json",
     },

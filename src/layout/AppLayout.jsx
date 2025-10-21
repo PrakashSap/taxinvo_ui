@@ -4,9 +4,13 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import { Outlet } from "react-router-dom";
 
-export default function AppLayout() {
-    const [collapsed, setCollapsed] = useState(false);
+const getInitialCollapsedState = () => {
+    // Check if window is defined (to avoid SSR errors) and if width is less than 1024px
+    return window.innerWidth < 1024;
+};
 
+export default function AppLayout() {
+    const [collapsed, setCollapsed] = useState(getInitialCollapsedState);
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
             <Sidebar collapsed={collapsed} />

@@ -41,13 +41,13 @@ const PrintInvoice = ({ stockId, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-gray-900/60 z-50 flex items-center justify-center print:bg-white">
+        <div className="fixed inset-0 z-[100] bg-gray-100 overflow-y-auto">
             {/* Outer modal (hidden during print) */}
             <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full mx-4 print:shadow-none print:border-none">
                 {/* Top Toolbar */}
                 <div className="flex justify-between items-center p-4 border-b bg-indigo-50 print:hidden">
                     <h2 className="text-lg font-semibold text-gray-700">Invoice Preview</h2>
-                    <div className="flex items-center space-x-3">
+                    <div className="fixed top-0 right-0 z-[110] p-4 flex space-x-3 bg-white shadow-lg rounded-bl-lg">
                         <button
                             onClick={handlePrint}
                             className="flex items-center px-3 py-1 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700"
@@ -70,7 +70,8 @@ const PrintInvoice = ({ stockId, onClose }) => {
                 </div>
 
                 {/* Printable Invoice Content */}
-                <div ref={invoiceRef} className="p-8 text-gray-800 bg-white">
+                <div className="min-h-full py-10 px-2 sm:px-4 md:px-6 mt-[60px]">
+                <div ref={invoiceRef} className="bg-white p-6 md:p-10 mx-auto max-w-4xl shadow-2xl">
                     {/* Header with Branding */}
                     <div className="flex justify-between items-center border-b pb-4 mb-6">
                         <div className="flex items-center space-x-3">
@@ -188,6 +189,7 @@ const PrintInvoice = ({ stockId, onClose }) => {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 };
