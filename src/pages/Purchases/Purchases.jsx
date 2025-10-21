@@ -96,17 +96,6 @@ const Purchases = () => {
 
             {/* Toolbar */}
             <div className="flex justify-between items-center mb-6">
-                <button
-                    onClick={() => {
-                        setEditingStock(null);
-                        setIsModalOpen(true);
-                    }}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-indigo-700 transition duration-150"
-                >
-                    <PlusCircleIcon className="w-5 h-5 mr-2" />
-                    Add Invoice
-                </button>
-
                 <div className="relative">
                     <input
                         type="text"
@@ -116,10 +105,18 @@ const Purchases = () => {
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="w-80 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-                    />
+                        className="w-80 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"/>
                     <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 </div>
+                <button
+                    onClick={() => {
+                        setEditingStock(null);
+                        setIsModalOpen(true);
+                    }}
+                    className="flex items-center px-4 py-2 bg-indigo-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                    <PlusCircleIcon className="w-5 h-5 mr-2" />
+                    Add Invoice
+                </button>
             </div>
 
             {/* Table */}

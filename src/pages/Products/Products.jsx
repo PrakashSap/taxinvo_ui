@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
     PlusCircleIcon,
     PencilIcon,
     TrashIcon,
     XMarkIcon,
+    MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import {
@@ -21,8 +22,6 @@ const emptyForm = {
     hsnSac: "",
     gstRate: "",
     uom: "",
-    // sellingPrice: "",
-    // purchasePrice: "",
     isEligibleForItc: false,
     reorderLevel: "",
 };
@@ -31,7 +30,7 @@ export default function Products() {
     const [products, setProducts] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isSupplierModalOpen, setIsSupplierModalOpen] = useState(false); // 👈 new
+    const [isSupplierModalOpen, setIsSupplierModalOpen] = useState(false);
     const [form, setForm] = useState(emptyForm);
     const [supplierForm, setSupplierForm] = useState({
         name: "",
@@ -43,20 +42,23 @@ export default function Products() {
         paymentTerms: "",
     });
     const [editing, setEditing] = useState(false);
+    const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        loadProducts();
-        loadSuppliers();
-    }, []);
-
-    const loadProducts = async () => {
+    const loadProducts = useCallback(async () => {
+        setLoading(true);
         try {
             const data = await getProducts();
-            setProducts(data);
+            const filtered = data.filter((p) =>
+                (p.name || "").toLowerCase().includes(search.toLowerCase())
+            );
+            setProducts(filtered);
         } catch {
             toast.error("Failed to load products");
+        } finally {
+            setLoading(false);
         }
-    };
+    }, [search]);
 
     const loadSuppliers = async () => {
         try {
@@ -66,6 +68,11 @@ export default function Products() {
             toast.error("Failed to load suppliers");
         }
     };
+
+    useEffect(() => {
+        loadProducts();
+        loadSuppliers();
+    }, [loadProducts]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -84,8 +91,6 @@ export default function Products() {
             hsnSac: form.hsnSac,
             gstRate: Number(form.gstRate),
             uom: form.uom,
-            // sellingPrice: Number(form.sellingPrice),
-            // purchasePrice: Number(form.purchasePrice),
             isEligibleForItc: Boolean(form.isEligibleForItc),
             reorderLevel: Number(form.reorderLevel || 0),
         };
@@ -104,7 +109,7 @@ export default function Products() {
             loadProducts();
         } catch (err) {
             console.error("save product", err);
-            toast.error(typeof err === "string" ? err : "Failed to save product");
+            toast.error("Failed to save product");
         }
     };
 
@@ -116,8 +121,6 @@ export default function Products() {
             hsnSac: p.hsnSac,
             gstRate: p.gstRate,
             uom: p.uom,
-            // sellingPrice: p.sellingPrice,
-            // purchasePrice: p.purchasePrice,
             isEligibleForItc: !!p.isEligibleForItc,
             reorderLevel: p.reorderLevel || "",
         });
@@ -151,72 +154,75 @@ export default function Products() {
                 creditLimit: "",
                 paymentTerms: "",
             });
-            loadSuppliers(); // refresh dropdown
+            loadSuppliers();
         } catch {
             toast.error("Failed to add supplier");
         }
     };
 
+    if (loading)
+        return <div className="p-6 text-center text-gray-500">Loading Products...</div>;
+
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
-            <div className="flex justify-between items-center mb-6">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-3">
                 <h1 className="text-3xl font-bold text-gray-800">Products</h1>
-                <button
-                    onClick={() => {
-                        setForm(emptyForm);
-                        setEditing(false);
-                        setIsModalOpen(true);
-                    }}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 transition"
-                >
-                    <PlusCircleIcon className="w-5 h-5 mr-2" /> Add Product
-                </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+            <div className="mb-4 relative w-full sm:w-80">
+                <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+                />
+            </div>
+            <button
+                onClick={() => {
+                    setForm(emptyForm);
+                    setEditing(false);
+                    setIsModalOpen(true);
+                }}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 transition w-full sm:w-auto"
+            >
+                <PlusCircleIcon className="w-5 h-5" /> Add Product
+            </button>
             </div>
 
             {/* Table */}
             <div className="bg-white rounded shadow overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
                     <thead className="bg-gray-100">
                     <tr>
-                        {[
-                            "#",
-                            "Name",
-                            "Supplier",
-                            "GST%",
-                            "UOM",
-                            // "Sell ₹",
-                            // "Buy ₹",
-                            "ITC",
-                            "Reorder",
-                            "Action",
-                        ].map((h) => (
-                            <th
-                                key={h}
-                                className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
-                            >
-                                {h}
-                            </th>
-                        ))}
+                        {["#", "Name", "Supplier", "GST%", "UOM", "ITC", "Reorder", "Action"].map(
+                            (h) => (
+                                <th
+                                    key={h}
+                                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase"
+                                >
+                                    {h}
+                                </th>
+                            )
+                        )}
                     </tr>
                     </thead>
                     <tbody>
                     {products.length ? (
                         products.map((p, i) => (
                             <tr key={p.productId} className="hover:bg-indigo-50/50">
-                                <td className="px-6 py-3 text-sm">{i + 1}</td>
-                                <td className="px-6 py-3 text-sm">{p.name}</td>
-                                <td className="px-6 py-3 text-sm">
-                                    {p.supplier?.name || "-"}
-                                </td>
-                                <td className="px-6 py-3 text-sm">{p.gstRate}</td>
-                                <td className="px-6 py-3 text-sm">{p.uom}</td>
-                                {/*<td className="px-6 py-3 text-sm">{p.sellingPrice}</td>*/}
-                                {/*<td className="px-6 py-3 text-sm">{p.purchasePrice}</td>*/}
-                                <td className="px-6 py-3 text-sm">
-                                    {p.isEligibleForItc ? "✅" : "❌"}
-                                </td>
-                                <td className="px-6 py-3 text-sm">{p.reorderLevel}</td>
-                                <td className="px-6 py-3 flex gap-2">
+                                <td className="px-4 py-3">{i + 1}</td>
+                                <td className="px-4 py-3">{p.name}</td>
+                                <td className="px-4 py-3">{p.supplier?.name || "-"}</td>
+                                <td className="px-4 py-3">{p.gstRate}</td>
+                                <td className="px-4 py-3">{p.uom}</td>
+                                <td className="px-4 py-3">{p.isEligibleForItc ? "✅" : "❌"}</td>
+                                <td className="px-4 py-3">{p.reorderLevel}</td>
+                                <td className="px-4 py-3 flex gap-2">
                                     <button
                                         onClick={() => handleEdit(p)}
                                         className="text-blue-600 hover:text-blue-800"
@@ -267,9 +273,7 @@ export default function Products() {
                             <form onSubmit={handleSave} className="p-6 space-y-4 overflow-y-auto">
                                 {/* Supplier Dropdown */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">
-                                        Supplier
-                                    </label>
+                                    <label className="block text-sm font-medium mb-1">Supplier</label>
                                     <div className="flex gap-2">
                                         <select
                                             name="supplierId"
@@ -287,7 +291,7 @@ export default function Products() {
                                         </select>
                                         <button
                                             type="button"
-                                            onClick={() => setIsSupplierModalOpen(true)} // 👈 open inline modal
+                                            onClick={() => setIsSupplierModalOpen(true)}
                                             className="bg-green-600 text-white px-3 rounded hover:bg-green-700"
                                             title="Add New Supplier"
                                         >
@@ -296,20 +300,16 @@ export default function Products() {
                                     </div>
                                 </div>
 
-                                {/* Rest of fields */}
+                                {/* Fields */}
                                 {[
                                     ["name", "Product Name"],
                                     ["hsnSac", "HSN/SAC"],
                                     ["gstRate", "GST Rate %"],
                                     ["uom", "Unit of Measure"],
-                                    // ["sellingPrice", "Selling Price ₹"],
-                                    // ["purchasePrice", "Purchase Price ₹"],
                                     ["reorderLevel", "Reorder Level"],
                                 ].map(([key, label]) => (
                                     <div key={key}>
-                                        <label className="block text-sm font-medium mb-1">
-                                            {label}
-                                        </label>
+                                        <label className="block text-sm font-medium mb-1">{label}</label>
                                         <input
                                             name={key}
                                             value={form[key]}
@@ -342,7 +342,7 @@ export default function Products() {
                 </div>
             )}
 
-            {/* Inline Supplier Modal */}
+            {/* Supplier Modal */}
             <SupplierModal
                 open={isSupplierModalOpen}
                 onClose={() => setIsSupplierModalOpen(false)}

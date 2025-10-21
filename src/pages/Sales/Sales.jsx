@@ -10,11 +10,10 @@ import {
     PencilIcon,
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
-import {deleteSale, getSale, getSaleInvoiceByRef, listSales} from "./SaleService";
-import AddSaleModal from "./AddSaleModal";
-import ViewInvoiceModal from "./ViewInvoiceModal";
-import PrintSaleInvoice from "./SalesInvoicePrint";
-
+import { deleteSale, getSaleInvoiceByRef, listSales } from './SaleService';
+import AddSaleModal from './AddSaleModal';
+import ViewInvoiceModal from './ViewInvoiceModal';
+import PrintSaleInvoice from './SalesInvoicePrint';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -26,7 +25,7 @@ const Sales = () => {
     const [totalPages, setTotalPages] = useState(1);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [editingSale, setEditingSale] = useState(null); // full sale object for edit
+    const [editingSale, setEditingSale] = useState(null);
 
     const [printRef, setPrintRef] = useState(null);
     const [previewInvoice, setPreviewInvoice] = useState(null);
@@ -53,23 +52,20 @@ const Sales = () => {
         loadSales();
     }, [loadSales]);
 
-    // Open edit drawer: fetch full sale by id then open drawer
     const openEdit = async (saleSummary) => {
         try {
-            // fetch all sale records for this invoice reference
             const invoiceLines = await getSaleInvoiceByRef(saleSummary.referenceNo);
             if (!invoiceLines || invoiceLines.length === 0) {
                 toast.error('Invoice details not found');
                 return;
             }
 
-            // convert into invoice-shaped object expected by AddSaleModal
             const invoiceObj = {
                 referenceNo: invoiceLines[0].referenceNo,
                 party: invoiceLines[0].party,
                 shop: invoiceLines[0].shop,
                 paymentMethod: invoiceLines[0].paymentMethod,
-                lineItems: invoiceLines.map(li => ({
+                lineItems: invoiceLines.map((li) => ({
                     productId: li.stock?.product?.productId ?? li.product?.productId,
                     stockId: li.stock?.stockId,
                     saleQuantity: Math.abs(Number(li.saleQuantity || 0)),
@@ -78,7 +74,7 @@ const Sales = () => {
                     gstRate: Number(li.gstRate || 0),
                     taxableValue: Number(li.taxableValue || 0),
                     gstAmount: Number(li.cgstAmount || 0) + Number(li.sgstAmount || 0),
-                }))
+                })),
             };
 
             setEditingSale(invoiceObj);
@@ -104,24 +100,17 @@ const Sales = () => {
     if (loading) return <div className="p-6 text-center text-gray-500">Loading Sales...</div>;
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">Sales Invoices</h1>
-                <button
-                    onClick={() => {
-                        setEditingSale(null);
-                        setIsDrawerOpen(true);
-                    }}
-                    className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded"
-                >
-                    <PlusCircleIcon className="w-5 h-5 mr-2" /> Add Sale
-                </button>
+        <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Sales Invoices</h1>
             </div>
 
-            <div className="mb-4 flex justify-between items-center">
-                <div className="relative">
+            {/* Search bar */}
+            <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div className="relative w-full sm:w-80">
                     <input
-                        className="pl-10 pr-4 py-2 border rounded w-80"
+                        className="pl-10 pr-4 py-2 border rounded-md w-full focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                         placeholder="Search invoice..."
                         value={search}
                         onChange={(e) => {
@@ -131,14 +120,28 @@ const Sales = () => {
                     />
                     <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 </div>
+                <button
+                    onClick={() => {
+                        setEditingSale(null);
+                        setIsDrawerOpen(true);
+                    }}
+                    className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+                >
+                    <PlusCircleIcon className="w-5 h-5" />
+                    <span>Add Sale</span>
+                </button>
             </div>
 
-            <div className="bg-white rounded shadow overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+            {/* Sales Table */}
+            <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
                     <thead className="bg-gray-100">
                     <tr>
                         {['Ref', 'Party', 'Payment', 'Total', 'Created', 'Status', 'Actions'].map((h) => (
-                            <th key={h} className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th
+                                key={h}
+                                className="px-4 py-3 text-left font-semibold text-gray-600 uppercase text-xs whitespace-nowrap"
+                            >
                                 {h}
                             </th>
                         ))}
@@ -148,21 +151,27 @@ const Sales = () => {
                     {sales.length ? (
                         sales.map((s) => (
                             <tr key={s.saleId} className="hover:bg-indigo-50/50">
-                                <td className="px-6 py-4">{s.referenceNo}</td>
-                                <td className="px-6 py-4">{s.party?.name || '-'}</td>
-                                <td className="px-6 py-4">{s.paymentMethod}</td>
-                                <td className="px-6 py-4 font-semibold">₹ {(Number(s.totalBillAmount) || 0).toFixed(2)}</td>
-                                <td className="px-6 py-4">{s.createdAt ? new Date(s.createdAt).toLocaleString() : '-'}</td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 py-3">{s.referenceNo}</td>
+                                <td className="px-4 py-3">{s.party?.name || '-'}</td>
+                                <td className="px-4 py-3">{s.paymentMethod}</td>
+                                <td className="px-4 py-3 font-semibold">
+                                    ₹ {(Number(s.totalBillAmount) || 0).toFixed(2)}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap">
+                                    {s.createdAt ? new Date(s.createdAt).toLocaleString() : '-'}
+                                </td>
+                                <td className="px-4 py-3">
                     <span
                         className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                            s.paymentMethod === 'Credit' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
+                            s.paymentMethod === 'Credit'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-green-100 text-green-800'
                         }`}
                     >
                       {s.paymentMethod}
                     </span>
                                 </td>
-                                <td className="px-6 py-4 space-x-2">
+                                <td className="px-4 py-3 space-x-2 flex items-center">
                                     <button onClick={() => openEdit(s)} className="text-blue-600">
                                         <PencilIcon className="w-5 h-5" />
                                     </button>
@@ -186,11 +195,12 @@ const Sales = () => {
                 </table>
             </div>
 
-            <div className="flex justify-end items-center mt-4 gap-3">
+            {/* Pagination */}
+            <div className="flex justify-center sm:justify-end items-center mt-4 gap-3 text-sm">
                 <button
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="p-2 border rounded"
+                    className="p-2 border rounded disabled:opacity-50"
                 >
                     <ChevronLeftIcon className="w-5 h-5" />
                 </button>
@@ -200,13 +210,13 @@ const Sales = () => {
                 <button
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-2 border rounded"
+                    className="p-2 border rounded disabled:opacity-50"
                 >
                     <ChevronRightIcon className="w-5 h-5" />
                 </button>
             </div>
 
-            {/* Add / Edit Drawer */}
+            {/* Modals */}
             {(isDrawerOpen || editingSale) && (
                 <AddSaleModal
                     isOpen={isDrawerOpen || !!editingSale}
@@ -224,7 +234,6 @@ const Sales = () => {
                 />
             )}
 
-            {/* Preview modal */}
             {previewInvoice && (
                 <ViewInvoiceModal
                     isOpen={!!previewInvoice}
@@ -233,7 +242,6 @@ const Sales = () => {
                 />
             )}
 
-            {/* Print modal */}
             {printRef && <PrintSaleInvoice referenceNo={printRef} onClose={() => setPrintRef(null)} />}
         </div>
     );
