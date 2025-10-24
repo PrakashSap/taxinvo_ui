@@ -177,53 +177,58 @@ const SalesInvoicePrint = ({ referenceNo, onClose }) => {
                     </div>
 
                     {/* Product Table */}
-                    <table className="w-full text-sm border border-gray-400 border-collapse mb-4 print:border-black">
-                        <thead className="bg-gray-100">
-                        <tr>
-                            <th className="border px-2 py-1 w-8">#</th>
-                            <th className="border px-2 py-1 text-left">Description</th>
-                            <th className="border px-2 py-1">HSN</th>
-                            <th className="border px-2 py-1 text-right">Qty</th>
-                            <th className="border px-2 py-1 text-right">Rate</th>
-                            <th className="border px-2 py-1 text-right">Taxable</th>
-                            <th className="border px-2 py-1 text-right">CGST</th>
-                            <th className="border px-2 py-1 text-right">SGST</th>
-                            <th className="border px-2 py-1 text-right">Total</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {items.map((it, i) => (
-                            <tr key={i}>
-                                <td className="border px-2 py-1 text-center">{i + 1}</td>
-                                <td className="border px-2 py-1">
-                                    {it.stock?.product?.name || it.product?.name || "-"}
-                                </td>
-                                <td className="border px-2 py-1 text-center">
-                                    {it.product?.hsnSac || "-"}
-                                </td>
-                                <td className="border px-2 py-1 text-right">
-                                    {toNum(it.saleQuantity)}
-                                </td>
-                                <td className="border px-2 py-1 text-right">
-                                    ₹ {toNum(it.unitSellingPrice || 0).toFixed(2)}
-                                </td>
-                                <td className="border px-2 py-1 text-right">
-                                    ₹ {toNum(it.taxableValue).toFixed(2)}
-                                </td>
-                                <td className="border px-2 py-1 text-right">
-                                    ₹ {toNum(it.cgstAmount || it.cgst).toFixed(2)}
-                                </td>
-                                <td className="border px-2 py-1 text-right">
-                                    ₹ {toNum(it.sgstAmount || it.sgst).toFixed(2)}
-                                </td>
-                                <td className="border px-2 py-1 text-right">
-                                    ₹ {toNum(it.totalBillAmount || it.lineTotal).toFixed(2)}
-                                </td>
+                    {/* Desktop / Print Table View */}
+                    <div className="overflow-x-auto max-w-full hidden sm:block">
+                        <table className="min-w-full text-sm border border-gray-400 border-collapse mb-4 print:border-black">
+                            <thead className="bg-gray-100">
+                            <tr>
+                                <th className="border px-2 py-1 w-8">#</th>
+                                <th className="border px-2 py-1 text-left">Description</th>
+                                <th className="border px-2 py-1">HSN</th>
+                                <th className="border px-2 py-1 text-right">Qty</th>
+                                <th className="border px-2 py-1 text-right">Rate</th>
+                                <th className="border px-2 py-1 text-right">Taxable</th>
+                                <th className="border px-2 py-1 text-right">CGST</th>
+                                <th className="border px-2 py-1 text-right">SGST</th>
+                                <th className="border px-2 py-1 text-right">Total</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {items.map((it, i) => (
+                                <tr key={i}>
+                                    <td className="border px-2 py-1 text-center">{i + 1}</td>
+                                    <td className="border px-2 py-1">{it.stock?.product?.name || it.product?.name || "-"}</td>
+                                    <td className="border px-2 py-1 text-center">{it.product?.hsnSac || "-"}</td>
+                                    <td className="border px-2 py-1 text-right">{toNum(it.saleQuantity)}</td>
+                                    <td className="border px-2 py-1 text-right">₹ {toNum(it.unitSellingPrice || 0).toFixed(2)}</td>
+                                    <td className="border px-2 py-1 text-right">₹ {toNum(it.taxableValue).toFixed(2)}</td>
+                                    <td className="border px-2 py-1 text-right">₹ {toNum(it.cgstAmount || it.cgst).toFixed(2)}</td>
+                                    <td className="border px-2 py-1 text-right">₹ {toNum(it.sgstAmount || it.sgst).toFixed(2)}</td>
+                                    <td className="border px-2 py-1 text-right">₹ {toNum(it.totalBillAmount || it.lineTotal).toFixed(2)}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
 
+                    {/* Mobile Card View */}
+                    <div className="sm:hidden space-y-3 mb-4">
+                        {items.map((it, i) => (
+                            <div key={i} className="border rounded-lg p-3 bg-white shadow-sm">
+                                <div className="flex justify-between text-sm font-semibold text-gray-700">
+                                    <span>{i + 1}. {it.stock?.product?.name || it.product?.name || "-"}</span>
+                                    <span>₹ {toNum(it.totalBillAmount || it.lineTotal).toFixed(2)}</span>
+                                </div>
+                                <div className="mt-1 text-xs text-gray-600 space-y-0.5">
+                                    <p>HSN: {it.product?.hsnSac || "-"}</p>
+                                    <p>Qty: {toNum(it.saleQuantity)} @ ₹ {toNum(it.unitSellingPrice || 0).toFixed(2)}</p>
+                                    <p>Taxable: ₹ {toNum(it.taxableValue).toFixed(2)}</p>
+                                    <p>CGST: ₹ {toNum(it.cgstAmount || it.cgst).toFixed(2)}</p>
+                                    <p>SGST: ₹ {toNum(it.sgstAmount || it.sgst).toFixed(2)}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                     {/* Totals */}
                     <div className="flex justify-end mt-4 text-sm">
                         <div className="w-1/3 text-right space-y-1">

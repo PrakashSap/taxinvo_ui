@@ -108,7 +108,8 @@ const PrintInvoice = ({ referenceNo, onClose }) => {
                             <p>Date: {invoice.purchaseDate || '-'}</p>
                         </div>
                     </div>
-
+                    {/* Product Table - Desktop */}
+                    <div className="overflow-x-auto max-w-full hidden sm:block">
                     <table className="w-full text-sm border border-gray-400 border-collapse mb-4 print:border-black">
                         <thead className="bg-gray-100">
                         <tr>
@@ -130,7 +131,30 @@ const PrintInvoice = ({ referenceNo, onClose }) => {
                         </tr>
                         </tbody>
                     </table>
+                    </div>
+                    {/* Product Cards - Mobile */}
+                    <div className="sm:hidden space-y-3 mb-4">
+                        <div className="border rounded-lg p-3 bg-white shadow-sm">
+                            <div className="flex justify-between text-sm font-semibold text-gray-700">
+                                <span>{product.name || "-"}</span>
+                                <span>₹ {totalAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="mt-1 text-xs text-gray-600 space-y-0.5">
+                                <p>HSN: {product.hsnSac || "-"}</p>
+                                <p>
+                                    Qty: {invoice.quantity} @ ₹{" "}
+                                    {toNum(invoice.purchasePrice).toFixed(2)}
+                                </p>
+                                <p>Taxable: ₹ {toNum(invoice.taxableValue).toFixed(2)}</p>
+                                <p>GST: ₹ {toNum(invoice.gstValue).toFixed(2)}</p>
+                                <p className="border-t pt-1 mt-1 font-medium">
+                                    Total: ₹ {totalAmount.toFixed(2)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
+                    {/* Totals */}
                     <div className="flex justify-end text-sm mt-4">
                         <div className="w-1/3 text-right space-y-1">
                             <div className="flex justify-between">

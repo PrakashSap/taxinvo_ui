@@ -7,6 +7,7 @@ import {
     MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import { debounce } from "lodash";
 import {
     getProducts,
     createProduct,
@@ -46,7 +47,6 @@ export default function Products() {
     const [loading, setLoading] = useState(false);
 
     const loadProducts = useCallback(async () => {
-        setLoading(true);
         try {
             const data = await getProducts();
             const filtered = data.filter((p) =>
@@ -73,6 +73,7 @@ export default function Products() {
         loadProducts();
         loadSuppliers();
     }, [loadProducts]);
+
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
