@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { PlusCircleIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import React, {useCallback, useEffect, useState} from "react";
+import {PlusCircleIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import {
     getParties,
@@ -22,19 +22,28 @@ export default function Parties() {
     const [form, setForm] = useState(emptyCustomer);
     const [editing, setEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const loadCustomers = async () => {
+    const loadCustomers = useCallback(async () => {
+        setLoading(true);
         try {
             const data = await getParties();
-            setCustomers(data.filter((p) => p.type === "Customer"));
+            const filtered = data.filter((p) =>
+                (p.type=== "Customer") &&
+                (p.name || "").toLowerCase().includes(search.toLowerCase())
+            );
+            setCustomers(filtered);
         } catch {
             toast.error("Failed to load customers");
+        } finally {
+            setLoading(false);
         }
-    };
+    },[search]);
 
     useEffect(() => {
         loadCustomers();
-    }, []);
+    }, [loadCustomers]);
 
     const handleChange = (e) =>
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -76,10 +85,23 @@ export default function Parties() {
     };
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Customers</h1>
+            </div>
+            {/* Search Bar */}
+            <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div className="relative w-full sm:w-80">
+                    <input
+                        type="text"
+                        placeholder="Search Customer..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="pl-10 pr-4 py-2 border rounded-md w-full focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+                    <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                </div>
                 <button
                     onClick={() => {
                         setForm(emptyCustomer);

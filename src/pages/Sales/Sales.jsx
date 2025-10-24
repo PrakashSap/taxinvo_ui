@@ -97,6 +97,14 @@ const Sales = () => {
         }
     };
 
+
+
+    const closePrintModal = () => {
+        setPrintRef(null);
+        window.onfocus = null; // Ensure cleanup if user clicks the X button
+    };
+
+
     if (loading) return <div className="p-6 text-center text-gray-500">Loading Sales...</div>;
 
     return (
@@ -242,7 +250,7 @@ const Sales = () => {
                 />
             )}
 
-            {printRef && <PrintSaleInvoice referenceNo={printRef} onClose={() => setPrintRef(null)} />}
+            {printRef && <PrintSaleInvoice referenceNo={printRef} onClose={closePrintModal} />}
         </div>
     );
 };

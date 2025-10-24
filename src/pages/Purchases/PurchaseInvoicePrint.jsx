@@ -17,13 +17,13 @@ const PurchaseInvoicePrint = ({ referenceNo, onClose }) => {
     useEffect(() => {
         if (!referenceNo) return;
         getPurchaseInvoiceByRef(referenceNo)
-            .then((data) => setItems(data || []))
+            .then((data) => setItems(data ))
             .catch((e) => console.error("getPurchaseInvoiceByRef", e));
     }, [referenceNo]);
 
     if (!items) return null;
 
-    const firstItem = items[0] || {};
+    const firstItem = items || {};
     const supplier = firstItem.party || {};
     const totalTaxable = items.reduce((s, it) => s + toNum(it.taxableValue), 0);
     const totalCGST = items.reduce((s, it) => s + toNum(it.cgstAmount || it.cgst), 0);
@@ -107,14 +107,14 @@ const PurchaseInvoicePrint = ({ referenceNo, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-gray-100 overflow-y-auto">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl mx-4">
+        <div className="fixed inset-0 z-[100] bg-gray-100 overflow-y-auto **print:relative print:z-auto print:bg-white**">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl mx-4 **print:rounded-none print:shadow-none print:mx-0**">
                 {/* Header Controls */}
-                <div className="flex justify-between p-3 border-b print:hidden bg-blue-50">
+                <div className="flex justify-between p-3 border-b **print:hidden** bg-blue-50">
                     <h3 className="font-semibold text-gray-700">
                         Purchase Invoice — {referenceNo}
                     </h3>
-                    <div className="fixed top-0 right-0 z-[110] p-4 flex space-x-3 bg-white shadow-lg rounded-bl-lg">
+                    <div className="fixed top-0 right-0 z-[110] p-4 flex space-x-3 bg-white shadow-lg rounded-bl-lg **print:hidden**">
                         <button
                             onClick={handlePrint}
                             className="p-2 rounded bg-blue-600 text-white hover:bg-blue-700"

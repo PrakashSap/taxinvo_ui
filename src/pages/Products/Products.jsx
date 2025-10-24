@@ -164,24 +164,23 @@ export default function Products() {
         return <div className="p-6 text-center text-gray-500">Loading Products...</div>;
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-3">
-                <h1 className="text-3xl font-bold text-gray-800">Products</h1>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Products</h1>
             </div>
 
             {/* Search Bar */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-            <div className="relative w-full sm:w-64">
-                <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none"/>
+            <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div className="relative w-full sm:w-80">
                 <input
                     type="text"
                     placeholder="Search products..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+                    className="pl-10 pr-4 py-2 border rounded-md w-full focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                 />
+                    <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
             </div>
             <button
                 onClick={() => {
@@ -355,7 +354,6 @@ export default function Products() {
                 onSave={handleSupplierSave}
                 editing={false}
             />
-        </div>
         </div>
     );
 }

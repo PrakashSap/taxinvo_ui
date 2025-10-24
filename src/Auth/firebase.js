@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
+// NOTE: Using placeholder config. Ensure this matches your actual Firebase project settings.
 const firebaseConfig = {
     apiKey: "AIzaSyAcMgL-5zMxzoWgZmRe3Bo0vWpv5l3Liuc",
     authDomain: "taxinvo.firebaseapp.com",
